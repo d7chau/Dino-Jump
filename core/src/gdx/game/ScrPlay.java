@@ -61,13 +61,12 @@ public class ScrPlay implements Screen, InputProcessor {
             }
         }
 
-//        if (nX > 750) {
-//            nX = -150;
-//        }
-//        if (nX < -150) {
-//            nX = Gdx.graphics.getWidth() + 150;
-//        }
-
+        if (nX > 750) {
+            nX = -150;
+        }
+        if (nX < -150) {
+            nX = Gdx.graphics.getWidth() + 150;
+        }
     }
 
     @Override
