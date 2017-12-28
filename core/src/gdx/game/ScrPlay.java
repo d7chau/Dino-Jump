@@ -23,12 +23,12 @@ public class ScrPlay implements Screen, InputProcessor {
     SpriteBatch batch;
     Texture txtdino, txtback;
     ScrMenu main;
-    int nX = 100, nY = 150, nWidth = 100;
+    int nX = 100, nY = 150, nWidth = 100, nSpriteSpeed = 5;
 
     public ScrPlay(Game game) {
         game = game;
         batch = new SpriteBatch();
-        txtdino = new Texture("dinosaurleft.png");
+        txtdino = new Texture("yellowdinoleft.png");
         txtback = new Texture("background1.png");
         main = new ScrMenu();
 
@@ -49,25 +49,19 @@ public class ScrPlay implements Screen, InputProcessor {
         batch.end();
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            nX += 5;
+            nX += nSpriteSpeed;
             if (nWidth > 0) {
                 nWidth *= -1;
+                nX-=nWidth;
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            nX -= 5;
+            nX -= nSpriteSpeed;
             if (nWidth < 0) {
-                nWidth *= -1;
+                nWidth *= -1 ;
+                nX-=nWidth;
             }
         }
-
-//        if (nX > 750) {
-//            nX = -150;
-//        }
-//        if (nX < -150) {
-//            nX = Gdx.graphics.getWidth() + 150;
-//        }
-
     }
 
     @Override
