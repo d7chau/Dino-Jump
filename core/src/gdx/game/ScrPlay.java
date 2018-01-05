@@ -11,7 +11,11 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
+import java.util.Random;
 
 /**
  *
@@ -21,17 +25,61 @@ public class ScrPlay implements Screen, InputProcessor {
 
     Game game;
     SpriteBatch batch;
-    Texture txtdino, txtback;
+    Texture txtdino, txtbackground, txtplatform;
     ScrMenu main;
-    int nX = 100, nY = 150, nWidth = 100, nSpriteSpeed = 5;
+    Rectangle rectDino, rectPlatform;
+    Sprite sprDino, sprPlatform;
+    ShapeRenderer shapeRenderer;
+    int nYDinoX = 100, nYDinoY = 200, nYDinoWidth = 75, nYDinoHeight = 100, nSpriteSpeed = 5, nPlatWidth = 200, nPlatHeight = 50;
+    int arnPlatform[] = new int[10];
 
     public ScrPlay(Game game) {
         game = game;
         batch = new SpriteBatch();
         txtdino = new Texture("yellowdinoleft.png");
-        txtback = new Texture("background1.png");
+        txtbackground = new Texture("background1.png");
+        txtplatform = new Texture("platform.png");
+        sprDino = new Sprite(txtdino);
+        sprPlatform = new Sprite(txtplatform);
         main = new ScrMenu();
+        shapeRenderer = new ShapeRenderer();
+        arnPlatform = CreatePlatforms();
+    }
 
+    public int[] CreatePlatforms() {
+        int[] arnNewPlatforms = new int[10];
+        for (int i = 0; i < arnNewPlatforms.length; i++) {
+            Random random = new Random();
+            int nPlatformRNG = random.nextInt(600 - 200);
+            arnNewPlatforms[i] = nPlatformRNG;
+        }
+        return arnNewPlatforms;
+    }
+
+    public void HandleKeys() {
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            nYDinoX += nSpriteSpeed;
+            if (nYDinoWidth > 0) {
+                nYDinoWidth *= -1;
+                nYDinoX -= nYDinoWidth;
+            }
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            nYDinoX -= nSpriteSpeed;
+            if (nYDinoWidth < 0) {
+                nYDinoWidth *= -1;
+                nYDinoX -= nYDinoWidth;
+            }
+        }
+    }
+
+    public void ScreenWrap() {
+        if (nYDinoX > 650) {
+            nYDinoX = -50;
+        }
+        if (nYDinoX < -50) {
+            nYDinoX = Gdx.graphics.getWidth() + 50;
+        }
     }
 
     @Override
@@ -42,26 +90,18 @@ public class ScrPlay implements Screen, InputProcessor {
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         batch.begin();
-        batch.draw(txtback, 0, 0, 600, 1000); // background
-        batch.draw(txtdino, nX, nY, nWidth, 150); //sprite        
+        batch.draw(txtbackground, 0, 0, 600, 1000); //background
+        batch.draw(txtdino, nYDinoX, nYDinoY, nYDinoWidth, nYDinoHeight); //yellow dino
+        for (int i = 1; i < arnPlatform.length; i++) { //10 platforms
+            int nPlatformX = arnPlatform[i];
+            int nPlatformY = 200 * i;
+            batch.draw(txtplatform, nPlatformX, nPlatformY, nPlatWidth, nPlatHeight);
+        }
         batch.end();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            nX += nSpriteSpeed;
-            if (nWidth > 0) {
-                nWidth *= -1;
-                nX-=nWidth;
-            }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            nX -= nSpriteSpeed;
-            if (nWidth < 0) {
-                nWidth *= -1 ;
-                nX-=nWidth;
-            }
-        }
+        HandleKeys();
+        ScreenWrap();
     }
 
     @Override
@@ -87,7 +127,6 @@ public class ScrPlay implements Screen, InputProcessor {
     @Override
     public void dispose() {
         batch.dispose();
-        txtdino.dispose();
     }
 
     @Override
