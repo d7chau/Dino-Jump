@@ -81,6 +81,30 @@ public class ScrPlay implements Screen, InputProcessor {
             nYDinoX = Gdx.graphics.getWidth() + 50;
         }
     }
+    
+    public void HitDetection() {
+        sprDino.setSize(nYDinoWidth, nYDinoHeight);
+        sprDino.setPosition(nYDinoX, nYDinoY);
+        rectDino = new Rectangle(sprDino.getX(), sprDino.getY(), sprDino.getWidth(), sprDino.getHeight());
+
+        for (int i = 1; i < arnPlatform.length; i++) {
+            int nPlatformX = arnPlatform[i];
+            int nPlatformY = 200 * i;
+            Rectangle arnRectPlatform[] = new Rectangle[10];
+            sprPlatform.setSize(nPlatWidth, nPlatHeight);
+            sprPlatform.setPosition(nPlatformX, nPlatformY);
+            rectPlatform = new Rectangle(sprPlatform.getX(), sprPlatform.getY(), sprPlatform.getWidth(), sprPlatform.getHeight());
+            arnRectPlatform[i] = rectPlatform;
+            boolean isOverlapping = rectDino.overlaps(arnRectPlatform[i]);
+            if (isOverlapping) {
+                System.out.println("overlapping");
+                //nCount++;
+                //if (nCount > 1){
+                //nDinoY += 5;
+                //}
+            }
+        }
+    }
 
     @Override
     public void show() {
@@ -102,6 +126,7 @@ public class ScrPlay implements Screen, InputProcessor {
 
         HandleKeys();
         ScreenWrap();
+        HitDetection();
     }
 
     @Override
