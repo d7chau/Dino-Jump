@@ -12,13 +12,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * @author chaud2180
  */
 public class ScrMenu {
+
     SpriteBatch batch;
     Texture texture;
-    
+
     public void createshape() {
         batch = new SpriteBatch();
         texture = new Texture("badlogic.jpg");
-        batch.begin();        
+        batch.begin();
         batch.draw(texture, 100, 100);
         batch.draw(texture, 69, 420);
         batch.draw(texture, 663, 699);
