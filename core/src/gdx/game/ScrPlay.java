@@ -9,9 +9,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
  *
@@ -23,7 +26,9 @@ public class ScrPlay implements Screen, InputProcessor {
     SpriteBatch batch;
     Texture txtdino, txtback;
     ScrMenu main;
-    int nX = 100, nY = 150, nWidth = 100, nSpriteSpeed = 5;
+    int nX = 100, nY = 150, nWidth = 100, nCounter = 0;
+    boolean bcanFall = true, bcanJump = true;
+    double dGravity = 0.5, dFallSpeed = 0, dJumpSpeed = 20;
 
     public ScrPlay(Game game) {
         game = game;
@@ -39,40 +44,69 @@ public class ScrPlay implements Screen, InputProcessor {
         return;
     }
 
+    public void fall() {
+        if (bcanFall) {
+            nY -= dFallSpeed;
+            dFallSpeed += dGravity;
+        }
+        if (nY <= 150) {
+            bcanJump = true;
+            bcanFall = false;
+            dFallSpeed = 0;
+        }
+    }
+
+    public void jump() {
+        if (bcanJump) {
+            nCounter++;
+            nY += dJumpSpeed;
+            dJumpSpeed -= dGravity;
+            if (nCounter >= 30) {
+                bcanJump = false;
+                bcanFall = true;
+                dJumpSpeed = 20;
+                nCounter = 0;
+            }
+        }
+    }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
         batch.draw(txtback, 0, 0, 600, 1000); // background
-        batch.draw(txtdino, nX, nY, nWidth, 150); //sprite        
+        batch.draw(txtdino, nX, nY, nWidth, 150); //sprite
         batch.end();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            nX += nSpriteSpeed;
+         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            nX += 5;
             if (nWidth > 0) {
                 nWidth *= -1;
-                nX-=nWidth;
+                nX -= nWidth;
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            nX -= nSpriteSpeed;
+            nX -= 5;
             if (nWidth < 0) {
-                nWidth *= -1 ;
-                nX-=nWidth;
+                nWidth *= -1;
+                nX -= nWidth;
             }
         }
-        
-        if (nX > 750) {
-            nX = -150;
+
+         if (nX > 650) {
+            nX = -50;
         }
-        if (nX < -150) {
-            nX = Gdx.graphics.getWidth() + 150;
+        if (nX < -50) {
+            nX = Gdx.graphics.getWidth() + 50;
         }
+        jump();
+        fall();
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(int width, int height
+    ) {
         return;
     }
 
@@ -98,42 +132,50 @@ public class ScrPlay implements Screen, InputProcessor {
     }
 
     @Override
-    public boolean keyDown(int keycode) {
+    public boolean keyDown(int keycode
+    ) {
         return false;
     }
 
     @Override
-    public boolean keyUp(int keycode) {
+    public boolean keyUp(int keycode
+    ) {
         return false;
     }
 
     @Override
-    public boolean keyTyped(char character) {
+    public boolean keyTyped(char character
+    ) {
         return false;
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+    public boolean touchDown(int screenX, int screenY, int pointer, int button
+    ) {
         return false;
     }
 
     @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+    public boolean touchUp(int screenX, int screenY, int pointer, int button
+    ) {
         return false;
     }
 
     @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
+    public boolean touchDragged(int screenX, int screenY, int pointer
+    ) {
         return false;
     }
 
     @Override
-    public boolean mouseMoved(int screenX, int screenY) {
+    public boolean mouseMoved(int screenX, int screenY
+    ) {
         return false;
     }
 
     @Override
-    public boolean scrolled(int amount) {
+    public boolean scrolled(int amount
+    ) {
         return false;
     }
 }
