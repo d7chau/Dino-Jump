@@ -92,14 +92,11 @@ public class ScrPlay implements Screen, InputProcessor {
             }
         }
 
-        if (nX > 750) {
+         if (nX > 650) {
             nX = -50;
         }
-        if (nX < -150) {
+        if (nX < -50) {
             nX = Gdx.graphics.getWidth() + 50;
-        }
-        if (nY <= 150) {
-            nY = 150;
         }
         jump();
         fall();
