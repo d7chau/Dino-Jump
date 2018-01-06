@@ -79,16 +79,18 @@ public class ScrPlay implements Screen, InputProcessor {
         batch.draw(txtdino, nX, nY, nWidth, 150); //sprite
         batch.end();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            nX += 5;    
+         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            nX += 5;
             if (nWidth > 0) {
                 nWidth *= -1;
+                nX -= nWidth;
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             nX -= 5;
             if (nWidth < 0) {
                 nWidth *= -1;
+                nX -= nWidth;
             }
         }
 
