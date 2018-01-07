@@ -30,8 +30,10 @@ public class ScrPlay implements Screen, InputProcessor {
     Rectangle rectDino, rectPlatform;
     Sprite sprDino, sprPlatform;
     ShapeRenderer shapeRenderer;
-    int nYDinoX = 100, nYDinoY = 200, nYDinoWidth = 75, nYDinoHeight = 100, nSpriteSpeed = 5, nPlatWidth = 200, nPlatHeight = 50;
-    int arnPlatform[] = new int[10];
+    int nYDinoX = 100, nYDinoY = 200, nYDinoWidth = 75, nYDinoHeight = 100, nSpriteSpeed = 5, nPlatWidth = 200, nPlatHeight = 50, nCountJump = 0, nCountOverlap = 0;
+    int arnPlatform[] = new int[5];
+    boolean bCanFall = true, bCanJump = true;
+    double dGravity = 0.5, dFallSpeed = 0, dJumpSpeed = 20;
 
     public ScrPlay(Game game) {
         game = game;
@@ -47,10 +49,10 @@ public class ScrPlay implements Screen, InputProcessor {
     }
 
     public int[] CreatePlatforms() {
-        int[] arnNewPlatforms = new int[10];
+        int[] arnNewPlatforms = new int[5];
         for (int i = 0; i < arnNewPlatforms.length; i++) {
             Random random = new Random();
-            int nPlatformRNG = random.nextInt(600 - 200);
+            int nPlatformRNG = random.nextInt(Gdx.graphics.getWidth() - 150);
             arnNewPlatforms[i] = nPlatformRNG;
         }
         return arnNewPlatforms;
@@ -74,14 +76,14 @@ public class ScrPlay implements Screen, InputProcessor {
     }
 
     public void ScreenWrap() {
-        if (nYDinoX > 650) {
+        if (nYDinoX > Gdx.graphics.getWidth() + 50) {
             nYDinoX = -50;
         }
         if (nYDinoX < -50) {
             nYDinoX = Gdx.graphics.getWidth() + 50;
         }
     }
-    
+
     public void HitDetection() {
         sprDino.setSize(nYDinoWidth, nYDinoHeight);
         sprDino.setPosition(nYDinoX, nYDinoY);
@@ -90,18 +92,42 @@ public class ScrPlay implements Screen, InputProcessor {
         for (int i = 1; i < arnPlatform.length; i++) {
             int nPlatformX = arnPlatform[i];
             int nPlatformY = 200 * i;
-            Rectangle arnRectPlatform[] = new Rectangle[10];
+            Rectangle arnRectPlatform[] = new Rectangle[5];
             sprPlatform.setSize(nPlatWidth, nPlatHeight);
             sprPlatform.setPosition(nPlatformX, nPlatformY);
             rectPlatform = new Rectangle(sprPlatform.getX(), sprPlatform.getY(), sprPlatform.getWidth(), sprPlatform.getHeight());
             arnRectPlatform[i] = rectPlatform;
             boolean isOverlapping = rectDino.overlaps(arnRectPlatform[i]);
             if (isOverlapping) {
-                System.out.println("overlapping");
-                //nCount++;
-                //if (nCount > 1){
-                //nDinoY += 5;
-                //}
+                bCanJump = true;
+                bCanFall = false;
+                dFallSpeed = 0;
+            }
+        }
+    }
+
+    public void HandleFalling() {
+        if (bCanFall) {
+            nYDinoY -= dFallSpeed;
+            dFallSpeed += dGravity;
+        }
+        if (nYDinoY <= 100) {
+            bCanJump = true;
+            bCanFall = false;
+            dFallSpeed = 0;
+        }
+    }
+
+    public void HandleJumping() {
+        if (bCanJump) {
+            nCountJump++;
+            nYDinoY += dJumpSpeed;
+            dJumpSpeed -= dGravity;
+            if (nCountJump >= 30) {
+                bCanJump = false;
+                bCanFall = true;
+                dJumpSpeed = 20;
+                nCountJump = 0;
             }
         }
     }
@@ -117,7 +143,7 @@ public class ScrPlay implements Screen, InputProcessor {
         batch.begin();
         batch.draw(txtbackground, 0, 0, 600, 1000); //background
         batch.draw(txtdino, nYDinoX, nYDinoY, nYDinoWidth, nYDinoHeight); //yellow dino
-        for (int i = 1; i < arnPlatform.length; i++) { //10 platforms
+        for (int i = 1; i < arnPlatform.length; i++) { // platforms
             int nPlatformX = arnPlatform[i];
             int nPlatformY = 200 * i;
             batch.draw(txtplatform, nPlatformX, nPlatformY, nPlatWidth, nPlatHeight);
@@ -127,6 +153,8 @@ public class ScrPlay implements Screen, InputProcessor {
         HandleKeys();
         ScreenWrap();
         HitDetection();
+        HandleJumping();
+        HandleFalling();
     }
 
     @Override
