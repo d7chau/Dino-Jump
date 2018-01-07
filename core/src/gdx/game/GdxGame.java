@@ -7,7 +7,6 @@ public class GdxGame extends Game {
 	@Override
 	public void create () {
             setScreen(new ScrPlay(this));
-               
 	}
 
 	@Override
