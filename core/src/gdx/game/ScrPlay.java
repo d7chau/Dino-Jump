@@ -140,7 +140,7 @@ public class ScrPlay implements Screen, InputProcessor {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(txtbackground, 0, 0, 600, 1000); //background
+        batch.draw(txtbackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); //background
         batch.draw(txtdino, nYDinoX, nYDinoY, nYDinoWidth, nYDinoHeight); //yellow dino
         for (int i = 1; i < arnPlatform.length; i++) { // platforms
             int nPlatformX = arnPlatform[i];
@@ -154,7 +154,6 @@ public class ScrPlay implements Screen, InputProcessor {
         HitDetection();
         HandleJumping();
         HandleFalling();
-
     }
 
     @Override
