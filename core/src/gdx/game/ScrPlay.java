@@ -25,15 +25,18 @@ public class ScrPlay implements Screen, InputProcessor {
 
     Game game;
     SpriteBatch batch;
-    Texture txtdino, txtbackground, txtplatform;
+    Texture txtdino, txtbackground, txtplatform, txtspring, txttrampoline;
     ScrMenu main;
     Rectangle rectDino, rectPlatform;
     Sprite sprDino, sprPlatform;
     ShapeRenderer shapeRenderer;
     int nYDinoX = 100, nYDinoY = 200, nYDinoWidth = 75, nYDinoHeight = 100, nSpriteSpeed = 5, nPlatWidth = 200, nPlatHeight = 50, nCountJump = 0, nCountOverlap = 0;
-    int arnPlatform[] = new int[5];
+    Platform arnPlatform[] = new Platform[5];
     boolean bCanFall = true, bCanJump = true;
     double dGravity = 0.5, dFallSpeed = 0, dJumpSpeed = 20;
+    Random random = new Random();
+    int nRNG = random.nextInt(arnPlatform.length);
+    int nTrampOrSpring = random.nextInt(2 + 1 - 1) + 1; //for a range of numbers not starting at 0 (max + 1 - min) + min; 
 
     public ScrPlay(Game game) {
         game = game;
@@ -41,6 +44,8 @@ public class ScrPlay implements Screen, InputProcessor {
         txtdino = new Texture("yellowdinoleft.png");
         txtbackground = new Texture("background1.png");
         txtplatform = new Texture("platform.png");
+        txtspring = new Texture("spring.png");
+        txttrampoline = new Texture("trampoline.png");
         sprDino = new Sprite(txtdino);
         sprPlatform = new Sprite(txtplatform);
         main = new ScrMenu();
@@ -48,14 +53,35 @@ public class ScrPlay implements Screen, InputProcessor {
         arnPlatform = CreatePlatforms();
     }
 
-    public int[] CreatePlatforms() {
-        int[] arnNewPlatforms = new int[5];
-        for (int i = 0; i < arnNewPlatforms.length; i++) {
-            Random random = new Random();
-            int nPlatformRNG = random.nextInt(Gdx.graphics.getWidth() - 150);
-            arnNewPlatforms[i] = nPlatformRNG;
+    @Override
+    public void show() {
+        return;
+    }
+
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        batch.draw(txtbackground, 0, 0, 600, 1000); //background
+        batch.draw(txtdino, nYDinoX, nYDinoY, nYDinoWidth, nYDinoHeight); //yellow dino
+        for (int i = 1; i < arnPlatform.length; i++) { // platforms
+            batch.draw(txtplatform, arnPlatform[i].nX, arnPlatform[i].nY, arnPlatform[i].nWidth, arnPlatform[i].nHeight);
         }
-        return arnNewPlatforms;
+        if (nTrampOrSpring == 1) {
+            batch.draw(txtspring, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50, 100, 35);
+        }
+        if (nTrampOrSpring == 2) {
+            batch.draw(txttrampoline, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50, 150, 35);
+        }
+        batch.end();
+
+        HandleKeys();
+        ScreenWrap();
+        HitDetection();
+        HandleJumping();
+        HandleFalling();
+//        CreateSpring();
+//        CreateTrampoline();
     }
 
     public void HandleKeys() {
@@ -84,17 +110,26 @@ public class ScrPlay implements Screen, InputProcessor {
         }
     }
 
+    public Platform[] CreatePlatforms() {
+        Platform[] arnNewPlatforms = new Platform[5];
+        for (int i = 0; i < arnNewPlatforms.length; i++) {
+            Random random = new Random();
+            int nPlatformRNG = random.nextInt(Gdx.graphics.getWidth() - 200);
+            arnNewPlatforms[i] = new Platform(nPlatformRNG, 200 * i, nPlatHeight, nPlatWidth);
+        }
+
+        return arnNewPlatforms;
+    }
+
     public void HitDetection() {
         sprDino.setSize(nYDinoWidth, nYDinoHeight);
         sprDino.setPosition(nYDinoX, nYDinoY);
         rectDino = new Rectangle(sprDino.getX(), sprDino.getY(), sprDino.getWidth(), sprDino.getHeight());
 
         for (int i = 1; i < arnPlatform.length; i++) {
-            int nPlatformX = arnPlatform[i];
-            int nPlatformY = 200 * i;
             Rectangle arnRectPlatform[] = new Rectangle[5];
-            sprPlatform.setSize(nPlatWidth, nPlatHeight);
-            sprPlatform.setPosition(nPlatformX, nPlatformY);
+            sprPlatform.setSize(arnPlatform[i].nWidth, arnPlatform[i].nHeight);
+            sprPlatform.setPosition(arnPlatform[i].nX, arnPlatform[i].nY);
             rectPlatform = new Rectangle(sprPlatform.getX(), sprPlatform.getY(), sprPlatform.getWidth(), sprPlatform.getHeight());
             arnRectPlatform[i] = rectPlatform;
             boolean isOverlapping = rectDino.overlaps(arnRectPlatform[i]);
@@ -102,6 +137,20 @@ public class ScrPlay implements Screen, InputProcessor {
                 bCanJump = true;
                 bCanFall = false;
                 dFallSpeed = 0;
+            }
+        }
+    }
+
+    public void HandleJumping() {
+        if (bCanJump) {
+            nCountJump++;
+            nYDinoY += dJumpSpeed;
+            dJumpSpeed -= dGravity;
+            if (nCountJump >= 40) {
+                bCanJump = false;
+                bCanFall = true;
+                dJumpSpeed = 20;
+                nCountJump = 0;
             }
         }
     }
@@ -118,45 +167,13 @@ public class ScrPlay implements Screen, InputProcessor {
         }
     }
 
-    public void HandleJumping() {
-        if (bCanJump) {
-            nCountJump++;
-            nYDinoY += dJumpSpeed;
-            dJumpSpeed -= dGravity;
-            if (nCountJump >= 30) {
-                bCanJump = false;
-                bCanFall = true;
-                dJumpSpeed = 20;
-                nCountJump = 0;
-            }
-        }
-    }
-
-    @Override
-    public void show() {
-        return;
-    }
-
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        batch.draw(txtbackground, 0, 0, 600, 1000); //background
-        batch.draw(txtdino, nYDinoX, nYDinoY, nYDinoWidth, nYDinoHeight); //yellow dino
-        for (int i = 1; i < arnPlatform.length; i++) { // platforms
-            int nPlatformX = arnPlatform[i];
-            int nPlatformY = 200 * i;
-            batch.draw(txtplatform, nPlatformX, nPlatformY, nPlatWidth, nPlatHeight);
-        }
-        batch.end();
-
-        HandleKeys();
-        ScreenWrap();
-        HitDetection();
-        HandleJumping();
-        HandleFalling();
-    }
-
+//    public void CreateSpring() {
+//
+//    }
+//
+//    public void CreateTrampoline() {
+// 
+//    }
     @Override
     public void resize(int width, int height) {
         return;
