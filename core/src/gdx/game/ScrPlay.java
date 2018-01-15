@@ -176,15 +176,10 @@ public class ScrPlay implements Screen, InputProcessor {
 
         boolean isOverlapping = rectDino.overlaps(rectSpring);
         if (isOverlapping) {
-            dGravity = 0.20;
             bCanJump = true;
             bCanFall = false;
             dFallSpeed = 0;
-            System.out.println("Overlapping");
-        }
-        if (!isOverlapping) {
-            dGravity = 0.5;
-            System.out.println("not overlapping");
+            dJumpSpeed = 25;
         }
     }
 
@@ -195,15 +190,10 @@ public class ScrPlay implements Screen, InputProcessor {
 
         boolean isOverlapping = rectDino.overlaps(rectTrampoline);
         if (isOverlapping) {
-            dGravity = 0.20;
             bCanJump = true;
             bCanFall = false;
             dFallSpeed = 0;
-            System.out.println("Overlapping");
-        }
-        if (!isOverlapping) {
-            dGravity = 0.5;
-            System.out.println("not overlapping");
+            dJumpSpeed = 30;
         }
     }
 
