@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import java.util.Random;
 
@@ -27,16 +28,16 @@ public class ScrPlay implements Screen, InputProcessor {
     SpriteBatch batch;
     Texture txtdino, txtbackground, txtplatform, txtspring, txttrampoline;
     ScrMenu main;
-    Rectangle rectDino, rectPlatform;
-    Sprite sprDino, sprPlatform;
+    Rectangle rectDino, rectPlatform, rectSpring, rectTrampoline;
+    Sprite sprDino, sprPlatform, sprSpring, sprTrampoline;
     ShapeRenderer shapeRenderer;
-    int nYDinoX = 100, nYDinoY = 200, nYDinoWidth = 75, nYDinoHeight = 100, nSpriteSpeed = 5, nPlatWidth = 200, nPlatHeight = 50, nCountJump = 0, nCountOverlap = 0;
+    int nYDinoX = 100, nYDinoY = 200, nYDinoWidth = 75, nYDinoHeight = 100, nPlatWidth = 200, nPlatHeight = 50, nSpringHeight = 35, nSpringWidth = 100, nTrampHeight = 35, nTrampWidth = 150;
+    int nSpriteSpeed = 5, nCountJump = 0, nCountOverlap = 0;
     Platform arnPlatform[] = new Platform[5];
     boolean bCanFall = true, bCanJump = true;
     double dGravity = 0.5, dFallSpeed = 0, dJumpSpeed = 20;
     Random random = new Random();
-    int nRNG = random.nextInt(arnPlatform.length);
-    int nTrampOrSpring = random.nextInt(2 + 1 - 1) + 1; //for a range of numbers not starting at 0 (max + 1 - min) + min; 
+    int nRNG = random.nextInt(4 + 1 - 1) + 1, nTrampOrSpring = random.nextInt(2 + 1 - 1) + 1; //for a range of numbers not starting at 0 (max + 1 - min) + min; 
 
     public ScrPlay(Game game) {
         game = game;
@@ -48,6 +49,8 @@ public class ScrPlay implements Screen, InputProcessor {
         txttrampoline = new Texture("trampoline.png");
         sprDino = new Sprite(txtdino);
         sprPlatform = new Sprite(txtplatform);
+        sprSpring = new Sprite(txtspring);
+        sprTrampoline = new Sprite(txttrampoline);
         main = new ScrMenu();
         shapeRenderer = new ShapeRenderer();
         arnPlatform = CreatePlatforms();
@@ -68,20 +71,20 @@ public class ScrPlay implements Screen, InputProcessor {
             batch.draw(txtplatform, arnPlatform[i].nX, arnPlatform[i].nY, arnPlatform[i].nWidth, arnPlatform[i].nHeight);
         }
         if (nTrampOrSpring == 1) {
-            batch.draw(txtspring, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50, 100, 35);
+            batch.draw(txtspring, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50, nSpringWidth, nSpringHeight); //spring
         }
         if (nTrampOrSpring == 2) {
-            batch.draw(txttrampoline, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50, 150, 35);
+            batch.draw(txttrampoline, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50, nTrampWidth, nTrampHeight);  //trampoline
         }
         batch.end();
 
         HandleKeys();
         ScreenWrap();
-        HitDetection();
+        PlatHD();     //HD stands for hit detection
         HandleJumping();
         HandleFalling();
-//        CreateSpring();
-//        CreateTrampoline();
+        SpringHD();
+        TrampHD();
     }
 
     public void HandleKeys() {
@@ -117,20 +120,19 @@ public class ScrPlay implements Screen, InputProcessor {
             int nPlatformRNG = random.nextInt(Gdx.graphics.getWidth() - 200);
             arnNewPlatforms[i] = new Platform(nPlatformRNG, 200 * i, nPlatHeight, nPlatWidth);
         }
-
         return arnNewPlatforms;
     }
 
-    public void HitDetection() {
+    public void PlatHD() {
         sprDino.setSize(nYDinoWidth, nYDinoHeight);
         sprDino.setPosition(nYDinoX, nYDinoY);
-        rectDino = new Rectangle(sprDino.getX(), sprDino.getY(), sprDino.getWidth(), sprDino.getHeight());
+        rectDino = new Rectangle(sprDino.getBoundingRectangle());
 
         for (int i = 1; i < arnPlatform.length; i++) {
             Rectangle arnRectPlatform[] = new Rectangle[5];
             sprPlatform.setSize(arnPlatform[i].nWidth, arnPlatform[i].nHeight);
             sprPlatform.setPosition(arnPlatform[i].nX, arnPlatform[i].nY);
-            rectPlatform = new Rectangle(sprPlatform.getX(), sprPlatform.getY(), sprPlatform.getWidth(), sprPlatform.getHeight());
+            rectPlatform = new Rectangle(sprPlatform.getBoundingRectangle());
             arnRectPlatform[i] = rectPlatform;
             boolean isOverlapping = rectDino.overlaps(arnRectPlatform[i]);
             if (isOverlapping) {
@@ -167,13 +169,44 @@ public class ScrPlay implements Screen, InputProcessor {
         }
     }
 
-//    public void CreateSpring() {
-//
-//    }
-//
-//    public void CreateTrampoline() {
-// 
-//    }
+    public void SpringHD() {
+        sprSpring.setSize(nSpringWidth, nSpringHeight);
+        sprSpring.setPosition(arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50);
+        rectSpring = new Rectangle(sprSpring.getBoundingRectangle());
+
+        boolean isOverlapping = rectDino.overlaps(rectSpring);
+        if (isOverlapping) {
+            dGravity = 0.20;
+            bCanJump = true;
+            bCanFall = false;
+            dFallSpeed = 0;
+            System.out.println("Overlapping");
+        }
+        if (!isOverlapping) {
+            dGravity = 0.5;
+            System.out.println("not overlapping");
+        }
+    }
+
+    public void TrampHD() {
+        sprTrampoline.setSize(nTrampWidth, nTrampHeight);
+        sprTrampoline.setPosition(arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50);
+        rectTrampoline = new Rectangle(sprTrampoline.getBoundingRectangle());
+
+        boolean isOverlapping = rectDino.overlaps(rectTrampoline);
+        if (isOverlapping) {
+            dGravity = 0.20;
+            bCanJump = true;
+            bCanFall = false;
+            dFallSpeed = 0;
+            System.out.println("Overlapping");
+        }
+        if (!isOverlapping) {
+            dGravity = 0.5;
+            System.out.println("not overlapping");
+        }
+    }
+
     @Override
     public void resize(int width, int height) {
         return;
