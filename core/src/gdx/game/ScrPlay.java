@@ -80,11 +80,11 @@ public class ScrPlay implements Screen, InputProcessor {
 
         HandleKeys();
         ScreenWrap();
-        PlatHD();     //HD stands for hit detection
+        PlatHD();                //HD stands for hit detection
         HandleJumping();
         HandleFalling();
-        SpringHD();
-        TrampHD();
+        SpringHD();              //HD stands for hit detection
+        TrampHD();               //HD stands for hit detection
     }
 
     public void HandleKeys() {
@@ -170,30 +170,34 @@ public class ScrPlay implements Screen, InputProcessor {
     }
 
     public void SpringHD() {
-        sprSpring.setSize(nSpringWidth, nSpringHeight);
-        sprSpring.setPosition(arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50);
-        rectSpring = new Rectangle(sprSpring.getBoundingRectangle());
+        if (nTrampOrSpring == 1) {
+            sprSpring.setSize(nSpringWidth, nSpringHeight);
+            sprSpring.setPosition(arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50);
+            rectSpring = new Rectangle(sprSpring.getBoundingRectangle());
 
-        boolean isOverlapping = rectDino.overlaps(rectSpring);
-        if (isOverlapping) {
-            bCanJump = true;
-            bCanFall = false;
-            dFallSpeed = 0;
-            dJumpSpeed = 25;
+            boolean isOverlapping = rectDino.overlaps(rectSpring);
+            if (isOverlapping) {
+                bCanJump = true;
+                bCanFall = false;
+                dFallSpeed = 0;
+                dJumpSpeed = 25;
+            }
         }
     }
 
     public void TrampHD() {
-        sprTrampoline.setSize(nTrampWidth, nTrampHeight);
-        sprTrampoline.setPosition(arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50);
-        rectTrampoline = new Rectangle(sprTrampoline.getBoundingRectangle());
+        if (nTrampOrSpring == 2) {
+            sprTrampoline.setSize(nTrampWidth, nTrampHeight);
+            sprTrampoline.setPosition(arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50);
+            rectTrampoline = new Rectangle(sprTrampoline.getBoundingRectangle());
 
-        boolean isOverlapping = rectDino.overlaps(rectTrampoline);
-        if (isOverlapping) {
-            bCanJump = true;
-            bCanFall = false;
-            dFallSpeed = 0;
-            dJumpSpeed = 30;
+            boolean isOverlapping = rectDino.overlaps(rectTrampoline);
+            if (isOverlapping) {
+                bCanJump = true;
+                bCanFall = false;
+                dFallSpeed = 0;
+                dJumpSpeed = 30;
+            }
         }
     }
 
