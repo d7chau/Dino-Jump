@@ -9,12 +9,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import java.util.Random;
 
@@ -31,19 +32,21 @@ public class ScrPlay implements Screen, InputProcessor {
     Rectangle rectDino, rectPlatform, rectSpring, rectTrampoline;
     Sprite sprDino, sprPlatform, sprSpring, sprTrampoline;
     ShapeRenderer shapeRenderer;
+    BitmapFont bmFont;
     int nYDinoX = 100, nYDinoY = 200, nYDinoWidth = 75, nYDinoHeight = 100, nPlatWidth = 200, nPlatHeight = 50, nSpringHeight = 35, nSpringWidth = 100, nTrampHeight = 35, nTrampWidth = 150;
-    int nSpriteSpeed = 5, nCountJump = 0, nCountOverlap = 0;
+    int nSpriteSpeed = 5, nCountJump = 0, nCountOverlap = 0, nCountScore = 0;
     Platform arnPlatform[] = new Platform[5];
     boolean bCanFall = true, bCanJump = true;
     double dGravity = 0.5, dFallSpeed = 0, dJumpSpeed = 20;
     Random random = new Random();
     int nRNG = random.nextInt(4 + 1 - 1) + 1, nTrampOrSpring = random.nextInt(2 + 1 - 1) + 1; //for a range of numbers not starting at 0 (max + 1 - min) + min; 
+    String sScore;
 
     public ScrPlay(Game game) {
         game = game;
         batch = new SpriteBatch();
         txtdino = new Texture("yellowdinoleft.png");
-        txtbackground = new Texture("background1.png");
+        txtbackground = new Texture("playscreen.png");
         txtplatform = new Texture("platform.png");
         txtspring = new Texture("spring.png");
         txttrampoline = new Texture("trampoline.png");
@@ -54,6 +57,9 @@ public class ScrPlay implements Screen, InputProcessor {
         main = new ScrMenu();
         shapeRenderer = new ShapeRenderer();
         arnPlatform = CreatePlatforms();
+        bmFont = new BitmapFont();
+        sScore = "0";
+        bmFont.setColor(Color.GRAY);
     }
 
     @Override
@@ -76,6 +82,8 @@ public class ScrPlay implements Screen, InputProcessor {
         if (nTrampOrSpring == 2) {
             batch.draw(txttrampoline, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50, nTrampWidth, nTrampHeight);  //trampoline
         }
+        bmFont.draw(batch, sScore, 190, 978);
+        bmFont.getData().setScale(2, 2);
         batch.end();
 
         HandleKeys();
@@ -139,6 +147,8 @@ public class ScrPlay implements Screen, InputProcessor {
                 bCanJump = true;
                 bCanFall = false;
                 dFallSpeed = 0;
+                nCountScore += 10;
+                sScore = "" + nCountScore;
             }
         }
     }
@@ -200,7 +210,6 @@ public class ScrPlay implements Screen, InputProcessor {
             }
         }
     }
-
     @Override
     public void resize(int width, int height) {
         return;
@@ -224,6 +233,7 @@ public class ScrPlay implements Screen, InputProcessor {
     @Override
     public void dispose() {
         batch.dispose();
+        bmFont.dispose();
     }
 
     @Override

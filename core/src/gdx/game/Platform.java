@@ -9,7 +9,7 @@ package gdx.game;
  *
  * @author Dennis
  */
-public class Platform {
+public class Platform { 
 
     int nX, nY, nHeight, nWidth;
 
