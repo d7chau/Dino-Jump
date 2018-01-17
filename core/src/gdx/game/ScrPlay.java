@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -24,7 +25,6 @@ import java.util.Random;
  * @author chaud2180
  */
 public class ScrPlay implements Screen, InputProcessor {
-
     Game game;
     SpriteBatch batch;
     Texture txtdino, txtbackground, txtplatform, txtspring, txttrampoline;
@@ -32,7 +32,7 @@ public class ScrPlay implements Screen, InputProcessor {
     Rectangle rectDino, rectPlatform, rectSpring, rectTrampoline;
     Sprite sprDino, sprPlatform, sprSpring, sprTrampoline;
     ShapeRenderer shapeRenderer;
-    BitmapFont bmFont;
+    BitmapFont bmFontScore;
     int nYDinoX = 100, nYDinoY = 200, nYDinoWidth = 75, nYDinoHeight = 100, nPlatWidth = 200, nPlatHeight = 50, nSpringHeight = 35, nSpringWidth = 100, nTrampHeight = 35, nTrampWidth = 150;
     int nSpriteSpeed = 5, nCountJump = 0, nCountOverlap = 0, nCountScore = 0;
     Platform arnPlatform[] = new Platform[5];
@@ -57,9 +57,9 @@ public class ScrPlay implements Screen, InputProcessor {
         main = new ScrMenu();
         shapeRenderer = new ShapeRenderer();
         arnPlatform = CreatePlatforms();
-        bmFont = new BitmapFont();
+        bmFontScore = new BitmapFont(Gdx.files.internal("fonts/score.fnt"));
+        bmFontScore.setColor(Color.GRAY);
         sScore = "0";
-        bmFont.setColor(Color.GRAY);
     }
 
     @Override
@@ -82,8 +82,8 @@ public class ScrPlay implements Screen, InputProcessor {
         if (nTrampOrSpring == 2) {
             batch.draw(txttrampoline, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50, nTrampWidth, nTrampHeight);  //trampoline
         }
-        bmFont.draw(batch, sScore, 190, 978);
-        bmFont.getData().setScale(2, 2);
+        GlyphLayout glScore = new GlyphLayout(bmFontScore, sScore);
+        bmFontScore.draw(batch, glScore, 190, 984);
         batch.end();
 
         HandleKeys();
@@ -136,20 +136,19 @@ public class ScrPlay implements Screen, InputProcessor {
         sprDino.setPosition(nYDinoX, nYDinoY);
         rectDino = new Rectangle(sprDino.getBoundingRectangle());
 
-        for (int i = 1; i < arnPlatform.length; i++) {
-            Rectangle arnRectPlatform[] = new Rectangle[5];
-            sprPlatform.setSize(arnPlatform[i].nWidth, arnPlatform[i].nHeight);
-            sprPlatform.setPosition(arnPlatform[i].nX, arnPlatform[i].nY);
-            rectPlatform = new Rectangle(sprPlatform.getBoundingRectangle());
-            arnRectPlatform[i] = rectPlatform;
-            boolean isOverlapping = rectDino.overlaps(arnRectPlatform[i]);
+        for (int i = 0; i < arnPlatform.length; i++) {
+            boolean isOverlapping = rectDino.overlaps(arnPlatform[i].rectPlatform);
             if (isOverlapping) {
                 bCanJump = true;
                 bCanFall = false;
                 dFallSpeed = 0;
+                arnPlatform[i].nJumpedOn += 1;            
+            }
+            if (isOverlapping && arnPlatform[i].nJumpedOn == 1) { //if it is overlapping and hasnt been touched before
                 nCountScore += 10;
                 sScore = "" + nCountScore;
             }
+
         }
     }
 
@@ -210,6 +209,7 @@ public class ScrPlay implements Screen, InputProcessor {
             }
         }
     }
+
     @Override
     public void resize(int width, int height) {
         return;
@@ -233,7 +233,7 @@ public class ScrPlay implements Screen, InputProcessor {
     @Override
     public void dispose() {
         batch.dispose();
-        bmFont.dispose();
+        bmFontScore.dispose();
     }
 
     @Override

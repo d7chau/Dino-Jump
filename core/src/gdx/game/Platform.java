@@ -5,18 +5,24 @@
  */
 package gdx.game;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Rectangle;
+
 /**
  *
  * @author Dennis
  */
-public class Platform { 
-
+public class Platform { //stores data
     int nX, nY, nHeight, nWidth;
+    int nJumpedOn;
+    Rectangle rectPlatform;
 
     public Platform(int nX, int nY, int nHeight, int nWidth) {
         this.nX = nX;
         this.nY = nY;
         this.nWidth = nWidth;
         this.nHeight = nHeight;       
+        this.nJumpedOn = 0;
+        this.rectPlatform = new Rectangle((float)this.nX, (float)this.nY,(float)this.nWidth,(float)this.nHeight);
     }     
 }
