@@ -25,10 +25,9 @@ import java.util.Random;
  * @author chaud2180
  */
 public class ScrPlay implements Screen, InputProcessor {
-    Game game;
+    GdxGame game;
     SpriteBatch batch;
     Texture txtdino, txtbackground, txtplatform, txtspring, txttrampoline;
-    ScrMenu main;
     Rectangle rectDino, rectPlatform, rectSpring, rectTrampoline;
     Sprite sprDino, sprPlatform, sprSpring, sprTrampoline;
     ShapeRenderer shapeRenderer;
@@ -42,8 +41,8 @@ public class ScrPlay implements Screen, InputProcessor {
     int nRNG = random.nextInt(4 + 1 - 1) + 1, nTrampOrSpring = random.nextInt(2 + 1 - 1) + 1; //for a range of numbers not starting at 0 (max + 1 - min) + min; 
     String sScore;
 
-    public ScrPlay(Game game) {
-        game = game;
+    public ScrPlay(GdxGame game) {
+        this.game = game;
         batch = new SpriteBatch();
         txtdino = new Texture("yellowdinoleft.png");
         txtbackground = new Texture("playscreen.png");
@@ -54,7 +53,6 @@ public class ScrPlay implements Screen, InputProcessor {
         sprPlatform = new Sprite(txtplatform);
         sprSpring = new Sprite(txtspring);
         sprTrampoline = new Sprite(txttrampoline);
-        main = new ScrMenu();
         shapeRenderer = new ShapeRenderer();
         arnPlatform = CreatePlatforms();
         bmFontScore = new BitmapFont(Gdx.files.internal("fonts/score.fnt"));

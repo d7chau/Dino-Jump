@@ -3,10 +3,14 @@ package gdx.game;
 import com.badlogic.gdx.Game;
 
 public class GdxGame extends Game {
-    
+    ScrMenu ScrMenu;
+    ScrPlay ScrPlay;
+
     @Override
     public void create() {
-        setScreen(new ScrPlay(this));
+        ScrMenu = new ScrMenu(this);
+        ScrPlay = new ScrPlay(this);
+        setScreen(ScrMenu);
     }
 
     @Override
