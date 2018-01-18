@@ -7,7 +7,6 @@ package gdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -24,8 +23,9 @@ import java.util.Random;
  *
  * @author chaud2180
  */
-public class ScrPlay implements Screen, InputProcessor {
-    GdxGame game;
+public class ScrPlay implements Screen {
+
+    GamMain game;
     SpriteBatch batch;
     Texture txtdino, txtbackground, txtplatform, txtspring, txttrampoline;
     Rectangle rectDino, rectPlatform, rectSpring, rectTrampoline;
@@ -34,14 +34,14 @@ public class ScrPlay implements Screen, InputProcessor {
     BitmapFont bmFontScore;
     int nYDinoX = 100, nYDinoY = 200, nYDinoWidth = 75, nYDinoHeight = 100, nPlatWidth = 200, nPlatHeight = 50, nSpringHeight = 35, nSpringWidth = 100, nTrampHeight = 35, nTrampWidth = 150;
     int nSpriteSpeed = 5, nCountJump = 0, nCountOverlap = 0, nCountScore = 0;
-    Platform arnPlatform[] = new Platform[5];
+    Platforms arnPlatform[] = new Platforms[5];
     boolean bCanFall = true, bCanJump = true;
     double dGravity = 0.5, dFallSpeed = 0, dJumpSpeed = 20;
     Random random = new Random();
     int nRNG = random.nextInt(4 + 1 - 1) + 1, nTrampOrSpring = random.nextInt(2 + 1 - 1) + 1; //for a range of numbers not starting at 0 (max + 1 - min) + min; 
     String sScore;
 
-    public ScrPlay(GdxGame game) {
+    public ScrPlay(GamMain game) {
         this.game = game;
         batch = new SpriteBatch();
         txtdino = new Texture("yellowdinoleft.png");
@@ -83,7 +83,6 @@ public class ScrPlay implements Screen, InputProcessor {
         GlyphLayout glScore = new GlyphLayout(bmFontScore, sScore);
         bmFontScore.draw(batch, glScore, 190, 984);
         batch.end();
-
         HandleKeys();
         ScreenWrap();
         PlatHD();                //HD stands for hit detection
@@ -119,12 +118,12 @@ public class ScrPlay implements Screen, InputProcessor {
         }
     }
 
-    public Platform[] CreatePlatforms() {
-        Platform[] arnNewPlatforms = new Platform[5];
+    public Platforms[] CreatePlatforms() {
+        Platforms[] arnNewPlatforms = new Platforms[5];
         for (int i = 0; i < arnNewPlatforms.length; i++) {
             Random random = new Random();
             int nPlatformRNG = random.nextInt(Gdx.graphics.getWidth() - 200);
-            arnNewPlatforms[i] = new Platform(nPlatformRNG, 200 * i, nPlatHeight, nPlatWidth);
+            arnNewPlatforms[i] = new Platforms(nPlatformRNG, 200 * i, nPlatHeight, nPlatWidth);
         }
         return arnNewPlatforms;
     }
@@ -133,20 +132,18 @@ public class ScrPlay implements Screen, InputProcessor {
         sprDino.setSize(nYDinoWidth, nYDinoHeight);
         sprDino.setPosition(nYDinoX, nYDinoY);
         rectDino = new Rectangle(sprDino.getBoundingRectangle());
-
         for (int i = 0; i < arnPlatform.length; i++) {
             boolean isOverlapping = rectDino.overlaps(arnPlatform[i].rectPlatform);
             if (isOverlapping) {
                 bCanJump = true;
                 bCanFall = false;
                 dFallSpeed = 0;
-                arnPlatform[i].nJumpedOn += 1;            
+                arnPlatform[i].nJumpedOn += 1;
             }
             if (isOverlapping && arnPlatform[i].nJumpedOn == 1) { //if it is overlapping and hasnt been touched before
                 nCountScore += 10;
                 sScore = "" + nCountScore;
             }
-
         }
     }
 
@@ -181,7 +178,6 @@ public class ScrPlay implements Screen, InputProcessor {
             sprSpring.setSize(nSpringWidth, nSpringHeight);
             sprSpring.setPosition(arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50);
             rectSpring = new Rectangle(sprSpring.getBoundingRectangle());
-
             boolean isOverlapping = rectDino.overlaps(rectSpring);
             if (isOverlapping) {
                 bCanJump = true;
@@ -197,7 +193,6 @@ public class ScrPlay implements Screen, InputProcessor {
             sprTrampoline.setSize(nTrampWidth, nTrampHeight);
             sprTrampoline.setPosition(arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50);
             rectTrampoline = new Rectangle(sprTrampoline.getBoundingRectangle());
-
             boolean isOverlapping = rectDino.overlaps(rectTrampoline);
             if (isOverlapping) {
                 bCanJump = true;
@@ -232,45 +227,5 @@ public class ScrPlay implements Screen, InputProcessor {
     public void dispose() {
         batch.dispose();
         bmFontScore.dispose();
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
     }
 }

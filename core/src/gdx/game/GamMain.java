@@ -2,7 +2,7 @@ package gdx.game;
 
 import com.badlogic.gdx.Game;
 
-public class GdxGame extends Game {
+public class GamMain extends Game {
     ScrMenu ScrMenu;
     ScrPlay ScrPlay;
 
@@ -18,3 +18,4 @@ public class GdxGame extends Game {
         super.render();
     }
 }
+

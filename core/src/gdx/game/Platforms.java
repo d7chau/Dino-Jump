@@ -12,12 +12,12 @@ import com.badlogic.gdx.math.Rectangle;
  *
  * @author Dennis
  */
-public class Platform { //stores data
+public class Platforms { //stores data
     int nX, nY, nHeight, nWidth;
     int nJumpedOn;
     Rectangle rectPlatform;
 
-    public Platform(int nX, int nY, int nHeight, int nWidth) {
+    public Platforms(int nX, int nY, int nHeight, int nWidth) {
         this.nX = nX;
         this.nY = nY;
         this.nWidth = nWidth;
