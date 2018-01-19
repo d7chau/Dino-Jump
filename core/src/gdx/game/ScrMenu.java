@@ -6,32 +6,28 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
+import gdx.game.Buttons;
 
 /**
  *
  * @author chaud2180
  */
-public class ScrMenu implements Screen {
+public class ScrMenu implements Screen, InputProcessor {
 
     SpriteBatch batch;
-    Texture txtbackground, txtBtnInfo, txtBtnShop, txtBtnPlay;
-    Sprite sprBtnPlay;
+    Texture txtbackground;
     int nBtnPlayX = 180, nBtnPlayY = 400, nBtnPlayWidth = 250, nBtnPlayHeight = 250;
-    boolean isClick = false;
+    Buttons btnPlay, btnLeaderBoard, btnInfo;
     GamMain game;
 
     public ScrMenu(GamMain game) {
         this.game = game;
         batch = new SpriteBatch();
         txtbackground = new Texture("menuscreen.png");
-        txtBtnInfo = new Texture("infobutton.png");
-        txtBtnShop = new Texture("shopbutton.png");
-        txtBtnPlay = new Texture("playbutton.png");
-        sprBtnPlay = new Sprite(txtBtnPlay);
-        sprBtnPlay.setPosition(nBtnPlayX, nBtnPlayY);
-        sprBtnPlay.setSize(nBtnPlayWidth, nBtnPlayHeight);
-        sprBtnPlay.setX(180);
-        sprBtnPlay.setY(400);
+        btnPlay = new Buttons(200, 300, 250, 250, "playbutton.png");
+        btnLeaderBoard = new Buttons(200, 300, 180, 180, "leaderboardbutton.png");
+        btnInfo = new Buttons(200, 300, 180, 180, "infobutton.png");
     }
 
     @Override
@@ -43,13 +39,16 @@ public class ScrMenu implements Screen {
     public void render(float delta) {
         batch.begin();
         batch.draw(txtbackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(sprBtnPlay, sprBtnPlay.getX(), sprBtnPlay.getY(), sprBtnPlay.getWidth(), sprBtnPlay.getHeight());
-        batch.draw(txtBtnShop, 50, 200, 175, 175);
-        batch.draw(txtBtnInfo, 380, 200, 175, 175);
+        btnPlay.draw(batch);
+        btnLeaderBoard.draw(batch);
+        btnInfo.draw(batch);
+        
         batch.end();
-       if (Gdx.input.justTouched()) {
-           
-       }
+        if (Gdx.input.isTouched()) {
+            if (btnPlay.isMousedOver()) {
+                game.setScreen(new ScrPlay(game));
+            }
+        }
     }
 
     @Override
@@ -75,5 +74,45 @@ public class ScrMenu implements Screen {
     @Override
     public void dispose() {
         return;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

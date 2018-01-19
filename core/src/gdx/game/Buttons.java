@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 /**
  *
- * @author brauj1894
+ * @author Dennis
  */
 public class Buttons extends Sprite {
 
