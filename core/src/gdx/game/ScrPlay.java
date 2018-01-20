@@ -4,7 +4,6 @@
  */
 package gdx.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -69,7 +68,7 @@ public class ScrPlay implements Screen {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(txtbackground, 0, 0, 600, 1000); //background
+        batch.draw(txtbackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); //background
         batch.draw(txtdino, nYDinoX, nYDinoY, nYDinoWidth, nYDinoHeight); //yellow dino
         for (int i = 1; i < arnPlatform.length; i++) { // platforms
             batch.draw(txtplatform, arnPlatform[i].nX, arnPlatform[i].nY, arnPlatform[i].nWidth, arnPlatform[i].nHeight);
@@ -123,7 +122,7 @@ public class ScrPlay implements Screen {
         for (int i = 0; i < arnNewPlatforms.length; i++) {
             Random random = new Random();
             int nPlatformRNG = random.nextInt(Gdx.graphics.getWidth() - 200);
-            arnNewPlatforms[i] = new Platforms(nPlatformRNG, 200 * i, nPlatHeight, nPlatWidth);
+            arnNewPlatforms[i] = new Platforms(nPlatformRNG, 250 * i, nPlatHeight, nPlatWidth);
         }
         return arnNewPlatforms;
     }
@@ -226,6 +225,11 @@ public class ScrPlay implements Screen {
     @Override
     public void dispose() {
         batch.dispose();
+        txtdino.dispose();
+        txtbackground.dispose();
+        txtplatform.dispose();
+        txtspring.dispose();
+        txttrampoline.dispose();
         bmFontScore.dispose();
     }
 }
