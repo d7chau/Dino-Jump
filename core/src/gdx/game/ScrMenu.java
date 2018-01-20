@@ -25,9 +25,9 @@ public class ScrMenu implements Screen, InputProcessor {
         this.game = game;
         batch = new SpriteBatch();
         txtbackground = new Texture("menuscreen.png");
-        btnPlay = new Buttons(200, 300, 250, 250, "playbutton.png");
-        btnLeaderBoard = new Buttons(200, 300, 180, 180, "leaderboardbutton.png");
-        btnInfo = new Buttons(200, 300, 180, 180, "infobutton.png");
+        btnPlay = new Buttons(175, 400, 250, 250, "playbutton.png");
+        btnLeaderBoard = new Buttons(400, 220, 147, 147, "leaderboardbutton.png");
+        btnInfo = new Buttons(30, 200, 180, 180, "infobutton.png");
     }
 
     @Override
