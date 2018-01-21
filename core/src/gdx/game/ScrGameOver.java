@@ -16,18 +16,19 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  *
  * @author Dennis
  */
-public class ScrLeaderBoard implements Screen, InputProcessor {
+public class ScrGameOver implements Screen, InputProcessor {
 
     GamMain game;
-    Texture txtleaderboard;
-    Buttons btnHome;
     SpriteBatch batch;
+    Texture txtgameoverscreen;
+    Buttons btnHome, btnRetry;
 
-    public ScrLeaderBoard(GamMain game) {
+    public ScrGameOver(GamMain game) {
         this.game = game;
         batch = new SpriteBatch();
-        txtleaderboard = new Texture("leaderboardscreen.png");
-        btnHome = new Buttons(480, 900, 75, 75, "homebutton.png");
+        txtgameoverscreen = new Texture("gameoverscreen.png");
+        btnHome = new Buttons(70, 350, 200, 200, "homebutton.png");
+        btnRetry = new Buttons(330, 350, 200, 200, "retrybutton.png");
     }
 
     @Override
@@ -39,18 +40,20 @@ public class ScrLeaderBoard implements Screen, InputProcessor {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(txtleaderboard, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(txtgameoverscreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         btnHome.draw(batch);
-        HandleButtons();
-        batch.end();
-    }
-
-    public void HandleButtons() {
         if (Gdx.input.isTouched()) {
             if (btnHome.isMousedOver()) {
                 game.setScreen(new ScrMenu(game));
             }
         }
+        btnRetry.draw(batch);
+        if (Gdx.input.isTouched()) {
+                if (btnRetry.isMousedOver()) {
+                    game.setScreen(new ScrPlay(game));
+                }
+          }
+        batch.end();
     }
 
     @Override
@@ -117,4 +120,5 @@ public class ScrLeaderBoard implements Screen, InputProcessor {
     public boolean scrolled(int amount) {
         return true;
     }
+
 }

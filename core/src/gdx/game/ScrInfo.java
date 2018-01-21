@@ -5,7 +5,6 @@
  */
 package gdx.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -22,7 +21,7 @@ public class ScrInfo implements Screen, InputProcessor {
 
     GamMain game;
     SpriteBatch batch;
-    Texture txtinfoscreen0,txtinfoscreen1, txtinfoscreen2, txtinfoscreen3;
+    Texture txtinfoscreen0, txtinfoscreen1, txtinfoscreen2, txtinfoscreen3;
     Buttons btnForward0, btnForward1, btnForward2, btnHome;
     int nScreen = 0;
 
@@ -48,7 +47,15 @@ public class ScrInfo implements Screen, InputProcessor {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        if(nScreen == 0){
+        HandleScreen0();
+        HandleScreen1();
+        HandleScreen2();
+        HandleScreen3();
+        batch.end();
+    }
+
+    public void HandleScreen0() {
+        if (nScreen == 0) {
             batch.draw(txtinfoscreen0, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             btnForward0.draw(batch);
             if (Gdx.input.isTouched()) {
@@ -56,8 +63,10 @@ public class ScrInfo implements Screen, InputProcessor {
                     nScreen = 1;
                 }
             }
-        } 
-        
+        }
+    }
+
+    public void HandleScreen1() {
         if (nScreen == 1) {
             batch.draw(txtinfoscreen1, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             btnForward1.draw(batch);
@@ -68,7 +77,9 @@ public class ScrInfo implements Screen, InputProcessor {
                 }
             }
         }
+    }
 
+    public void HandleScreen2() {
         if (nScreen == 2) {
             batch.draw(txtinfoscreen2, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             btnForward2.draw(batch);
@@ -79,18 +90,19 @@ public class ScrInfo implements Screen, InputProcessor {
                 }
             }
         }
+    }
 
+    public void HandleScreen3() {
         if (nScreen == 3) {
             batch.draw(txtinfoscreen3, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             btnHome.draw(batch);
-            
+
             if (Gdx.input.isTouched()) {
                 if (btnHome.isMousedOver()) {
                     game.setScreen(new ScrMenu(game));
                 }
             }
         }
-        batch.end();
     }
 
     @Override

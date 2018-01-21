@@ -16,7 +16,7 @@ public class ScrMenu implements Screen, InputProcessor {
     SpriteBatch batch;
     Texture txtbackground;
     int nBtnPlayX = 180, nBtnPlayY = 400, nBtnPlayWidth = 250, nBtnPlayHeight = 250;
-    Buttons btnPlay, btnLeaderBoard, btnInfo;
+    Buttons btnPlay, btnLeaderBoard, btnInfo, btnGameOver;
     GamMain game;
 
     public ScrMenu(GamMain game) {
@@ -26,6 +26,7 @@ public class ScrMenu implements Screen, InputProcessor {
         btnPlay = new Buttons(175, 400, 250, 250, "playbutton.png");
         btnLeaderBoard = new Buttons(400, 220, 147, 147, "leaderboardbutton.png");
         btnInfo = new Buttons(30, 200, 180, 180, "infobutton.png");
+        btnGameOver = new Buttons(250, 200, 120, 120, "gameoverbutton.png");
     }
 
     @Override
@@ -40,16 +41,23 @@ public class ScrMenu implements Screen, InputProcessor {
         btnPlay.draw(batch);
         btnLeaderBoard.draw(batch);
         btnInfo.draw(batch);
-
+        btnGameOver.draw(batch);
+        HandleButtons();
         batch.end();
+
+    }
+
+    public void HandleButtons() {
         if (Gdx.input.isTouched()) {
             if (btnPlay.isMousedOver()) {
                 game.setScreen(new ScrPlay(game));
             } else if (btnInfo.isMousedOver()) {
                 game.setScreen(new ScrInfo(game));
+            } else if (btnLeaderBoard.isMousedOver()) {
+                game.setScreen(new ScrLeaderBoard(game));
+            } else if (btnGameOver.isMousedOver()) {
+                game.setScreen(new ScrGameOver(game));
             }
-        } else if (btnLeaderBoard.isMousedOver()) {
-            game.setScreen(new ScrLeaderBoard(game));
         }
     }
 
