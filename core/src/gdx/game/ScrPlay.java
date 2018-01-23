@@ -96,7 +96,7 @@ public class ScrPlay implements Screen, InputProcessor {
         rectDino = new Rectangle(sprDino.getX(), sprDino.getY(), sprDino.getWidth(), sprDino.getHeight());
         for (int i = 1; i < arnPlatform.length; i++) {
             int nPlatformX = arnPlatform[i];
-            int nPlatformY = 200 * i;
+            int nPlatformY = 250 * i;
             Rectangle arnRectPlatform[] = new Rectangle[5];
             sprPlatform.setSize(nPlatWidth, nPlatHeight);
             sprPlatform.setPosition(nPlatformX, nPlatformY);
