@@ -25,6 +25,7 @@ import java.util.Random;
  * @author chaud2180
  */
 public class ScrPlay implements Screen, InputProcessor {
+
     Game game;
     SpriteBatch batch;
     Texture txtdino, txtbackground, txtplatform, txtspring, txttrampoline;
@@ -82,9 +83,9 @@ public class ScrPlay implements Screen, InputProcessor {
         if (nTrampOrSpring == 2) {
             batch.draw(txttrampoline, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50, nTrampWidth, nTrampHeight);  //trampoline
         }
-        GlyphLayout glScore = new GlyphLayout(bmFontScore, sScore);
-        bmFontScore.draw(batch, glScore, 190, 984);
-        batch.end();
+        GlyphLayout glScore = new GlyphLayout(bmFontScore, sScore);       // Learning how to use bitmap fonts:
+        bmFontScore.draw(batch, glScore, 190, 984);                       //https://www.youtube.com/watch?v=cGqq59-Kd7Y
+        batch.end();                                                      //https://www.youtube.com/watch?v=xMxtf0sJvr4&t=9s
 
         HandleKeys();
         ScreenWrap();
@@ -142,7 +143,7 @@ public class ScrPlay implements Screen, InputProcessor {
                 bCanJump = true;
                 bCanFall = false;
                 dFallSpeed = 0;
-                arnPlatform[i].nJumpedOn += 1;            
+                arnPlatform[i].nJumpedOn += 1;
             }
             if (isOverlapping && arnPlatform[i].nJumpedOn == 1) { //if it is overlapping and hasnt been touched before
                 nCountScore += 10;
