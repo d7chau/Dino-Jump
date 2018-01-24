@@ -11,6 +11,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -33,6 +34,7 @@ public class ScrPlay implements Screen, InputProcessor {
     Rectangle rectDino, rectPlatform, rectSpring, rectTrampoline;
     Sprite sprDino, sprPlatform, sprSpring, sprTrampoline;
     ShapeRenderer shapeRenderer;
+    public OrthographicCamera camera;
     BitmapFont bmFontScore;
     int nYDinoX = 100, nYDinoY = 200, nYDinoWidth = 75, nYDinoHeight = 100, nPlatWidth = 200, nPlatHeight = 50, nSpringHeight = 35, nSpringWidth = 100, nTrampHeight = 35, nTrampWidth = 150;
     int nSpriteSpeed = 5, nCountJump = 0, nCountOverlap = 0, nCountScore = 0;
@@ -57,6 +59,9 @@ public class ScrPlay implements Screen, InputProcessor {
         sprTrampoline = new Sprite(txttrampoline);
         main = new ScrMenu();
         shapeRenderer = new ShapeRenderer();
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false);
+        camera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
         arnPlatform = CreatePlatforms();
         bmFontScore = new BitmapFont(Gdx.files.internal("fonts/score.fnt"));
         bmFontScore.setColor(Color.GRAY);
@@ -71,22 +76,34 @@ public class ScrPlay implements Screen, InputProcessor {
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        camera.update();
         batch.begin();
-        batch.draw(txtbackground, 0, 0, 600, 1000); //background
+        batch.draw(txtbackground, 0, camera.position.y - 500, 600, 1000); //background
         batch.draw(txtdino, nYDinoX, nYDinoY, nYDinoWidth, nYDinoHeight); //yellow dino
         for (int i = 1; i < arnPlatform.length; i++) { // platforms
-            batch.draw(txtplatform, arnPlatform[i].nX, arnPlatform[i].nY, arnPlatform[i].nWidth, arnPlatform[i].nHeight);
+            batch.draw(sprPlatform, arnPlatform[i].nX, arnPlatform[i].nY, arnPlatform[i].nWidth, arnPlatform[i].nHeight);
+            if (arnPlatform[i].nY <= camera.position.y - 500) {
+                batch.draw(sprPlatform, arnPlatform[i].nX, arnPlatform[i].nY + 1000, arnPlatform[i].nWidth, arnPlatform[i].nHeight);
+            }
         }
         if (nTrampOrSpring == 1) {
-            batch.draw(txtspring, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50, nSpringWidth, nSpringHeight); //spring
+            batch.draw(sprSpring, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50, nSpringWidth, nSpringHeight); //spring
+            if (arnPlatform[nRNG].nY <= camera.position.y - 500) {
+                batch.draw(sprSpring, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 1050, nSpringWidth, nSpringHeight); //spring
+            }
         }
         if (nTrampOrSpring == 2) {
-            batch.draw(txttrampoline, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50, nTrampWidth, nTrampHeight);  //trampoline
+            batch.draw(sprTrampoline, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50, nTrampWidth, nTrampHeight);  //trampoline
+            if (arnPlatform[nRNG].nY <= camera.position.y - 500) {
+                batch.draw(sprTrampoline, arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 1050, nTrampWidth, nTrampHeight);  //trampoline
+            }
         }
+
         GlyphLayout glScore = new GlyphLayout(bmFontScore, sScore);       // Learning how to use bitmap fonts:
-        bmFontScore.draw(batch, glScore, 190, 984);                       //https://www.youtube.com/watch?v=cGqq59-Kd7Y
+        bmFontScore.draw(batch, glScore, 190, camera.position.y + 486);                       //https://www.youtube.com/watch?v=cGqq59-Kd7Y
         batch.end();                                                      //https://www.youtube.com/watch?v=xMxtf0sJvr4&t=9s
 
+        batch.setProjectionMatrix(camera.combined);
         HandleKeys();
         ScreenWrap();
         PlatHD();                //HD stands for hit detection
@@ -127,7 +144,7 @@ public class ScrPlay implements Screen, InputProcessor {
         for (int i = 0; i < arnNewPlatforms.length; i++) {
             Random random = new Random();
             int nPlatformRNG = random.nextInt(Gdx.graphics.getWidth() - 200);
-            arnNewPlatforms[i] = new Platform(nPlatformRNG, 200 * i, nPlatHeight, nPlatWidth);
+            arnNewPlatforms[i] = new Platform(nPlatformRNG, 250 * i, nPlatHeight, nPlatWidth);
         }
         return arnNewPlatforms;
     }
@@ -138,6 +155,7 @@ public class ScrPlay implements Screen, InputProcessor {
         rectDino = new Rectangle(sprDino.getBoundingRectangle());
 
         for (int i = 0; i < arnPlatform.length; i++) {
+            Rectangle arnRectPlatform[] = new Rectangle[5];
             boolean isOverlapping = rectDino.overlaps(arnPlatform[i].rectPlatform);
             if (isOverlapping) {
                 bCanJump = true;
@@ -145,11 +163,19 @@ public class ScrPlay implements Screen, InputProcessor {
                 dFallSpeed = 0;
                 arnPlatform[i].nJumpedOn += 1;
             }
-            if (isOverlapping && arnPlatform[i].nJumpedOn == 1) { //if it is overlapping and hasnt been touched before
-                nCountScore += 10;
-                sScore = "" + nCountScore;
-            }
+            if (arnPlatform[i].nY <= camera.position.y - 500) {
+                sprPlatform.setSize(arnPlatform[i].nWidth, arnPlatform[i].nHeight);
+                sprPlatform.setPosition(arnPlatform[i].nX, arnPlatform[i].nY + 1000);
+                rectPlatform = new Rectangle(sprPlatform.getBoundingRectangle());
+                arnRectPlatform[i] = rectPlatform;
+                isOverlapping = rectDino.overlaps(arnRectPlatform[i]);
+                if (isOverlapping) {
+                    bCanJump = true;
+                    bCanFall = false;
+                    dFallSpeed = 0;
+                }
 
+            }
         }
     }
 
@@ -158,6 +184,12 @@ public class ScrPlay implements Screen, InputProcessor {
             nCountJump++;
             nYDinoY += dJumpSpeed;
             dJumpSpeed -= dGravity;
+            if (nYDinoY >= camera.position.y) {
+                camera.position.y += dJumpSpeed;
+                nCountScore += 10;
+                sScore = "" + nCountScore;
+            }
+
             if (nCountJump >= 40) {
                 bCanJump = false;
                 bCanFall = true;
@@ -179,7 +211,7 @@ public class ScrPlay implements Screen, InputProcessor {
         }
     }
 
-    public void SpringHD() {
+     public void SpringHD() {
         if (nTrampOrSpring == 1) {
             sprSpring.setSize(nSpringWidth, nSpringHeight);
             sprSpring.setPosition(arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 50);
@@ -191,6 +223,18 @@ public class ScrPlay implements Screen, InputProcessor {
                 bCanFall = false;
                 dFallSpeed = 0;
                 dJumpSpeed = 25;
+            }
+            if (arnPlatform[nRNG].nY <= camera.position.y - 500) {
+                sprSpring.setSize(nSpringWidth, nSpringHeight);
+                sprSpring.setPosition(arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 1050);
+                rectSpring = new Rectangle(sprSpring.getBoundingRectangle());
+                isOverlapping = rectDino.overlaps(rectSpring);
+                if (isOverlapping) {
+                    bCanJump = true;
+                    bCanFall = false;
+                    dFallSpeed = 0;
+                    dJumpSpeed = 25;
+                }
             }
         }
     }
@@ -208,8 +252,21 @@ public class ScrPlay implements Screen, InputProcessor {
                 dFallSpeed = 0;
                 dJumpSpeed = 30;
             }
+            if (arnPlatform[nRNG].nY <= camera.position.y - 500) {
+                sprSpring.setSize(nSpringWidth, nSpringHeight);
+                sprSpring.setPosition(arnPlatform[nRNG].nX, arnPlatform[nRNG].nY + 1050);
+                rectSpring = new Rectangle(sprSpring.getBoundingRectangle());
+                isOverlapping = rectDino.overlaps(rectSpring);
+                if (isOverlapping) {
+                    bCanJump = true;
+                    bCanFall = false;
+                    dFallSpeed = 0;
+                    dJumpSpeed = 30;
+                }
+            }
         }
     }
+
 
     @Override
     public void resize(int width, int height) {
