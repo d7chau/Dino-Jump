@@ -13,10 +13,11 @@ public class Platform {
 
     int nX, nY, nHeight, nWidth;
 
+    
     public Platform(int nX, int nY, int nHeight, int nWidth) {
         this.nX = nX;
         this.nY = nY;
         this.nWidth = nWidth;
-        this.nHeight = nHeight;       
+        this.nHeight = nHeight;
     }     
 }
