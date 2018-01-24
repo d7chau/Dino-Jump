@@ -48,7 +48,8 @@ public class ScrMenu implements Screen, InputProcessor {
     }
 
     public void HandleButtons() {
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.isTouched()) {                          //Learning how to switch screens:
+                                                              //https://github.com/weihanli101/Cygnus-Strike/blob/MasterWithMenu/core/src/com/mygdx/game/MyGame.java
             if (btnPlay.isMousedOver()) {
                 game.setScreen(new ScrPlay(game));
             } else if (btnInfo.isMousedOver()) {

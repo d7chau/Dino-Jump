@@ -16,8 +16,9 @@ public class Buttons extends Sprite {
 
     int nX, nY, nW, nH;
 
-    public Buttons(int _nX, int _nY, int _nW, int _nH, String sFile) {
-        super(new Texture(Gdx.files.internal(sFile)));
+    public Buttons(int _nX, int _nY, int _nW, int _nH, String sFile) { //Learning how to implement buttons:
+                                                                       //https://github.com/brauj1894/Risk/blob/master/core/src/gdx/game/objects/Button.java
+        super(new Texture(Gdx.files.internal(sFile))); 
         nX = _nX;
         nY = _nY;
         nW = _nW;
