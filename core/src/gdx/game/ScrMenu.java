@@ -48,9 +48,9 @@ public class ScrMenu implements Screen, InputProcessor {
                 game.setScreen(new ScrPlay(game));
             } else if (btnInfo.isMousedOver()) {
                 game.setScreen(new ScrInfo(game));
+            } else if (btnLeaderBoard.isMousedOver()) {
+                game.setScreen(new ScrLeaderBoard(game));
             }
-        } else if (btnLeaderBoard.isMousedOver()) {
-            game.setScreen(new ScrLeaderBoard(game));
         }
     }
 
