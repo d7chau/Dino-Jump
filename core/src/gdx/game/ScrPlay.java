@@ -44,7 +44,9 @@ public class ScrPlay implements Screen, InputProcessor {
         return;
     }
 
-    public void fall() {
+    public void fall() {                 //Learning how to create gravity in the game (making the sprite jump and fall)
+                                         //https://www.youtube.com/watch?v=fCsMiiup1OQ
+
         if (bcanFall) {
             nY -= dFallSpeed;
             dFallSpeed += dGravity;
