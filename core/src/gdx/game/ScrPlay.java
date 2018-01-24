@@ -84,7 +84,8 @@ public class ScrPlay implements Screen, InputProcessor {
         }
     }
 
-    public void HitDetection() {
+    public void HitDetection() {                      //Learning how to detect collision detection between two sprites                     
+                                                      //https://youtu.be/T1aN--vTqLc
         sprDino.setSize(nYDinoWidth, nYDinoHeight);
         sprDino.setPosition(nYDinoX, nYDinoY);
         rectDino = new Rectangle(sprDino.getX(), sprDino.getY(), sprDino.getWidth(), sprDino.getHeight());
