@@ -1,30 +1,34 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package gdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
  *
- * @author chaud2180
+ * @author Dennis
  */
-public class ScrMenu implements Screen, InputProcessor {
+public class ScrGameOver implements Screen, InputProcessor {
 
-    SpriteBatch batch;
-    Texture txtbackground;
-    int nBtnPlayX = 180, nBtnPlayY = 400, nBtnPlayWidth = 250, nBtnPlayHeight = 250;
-    Buttons btnPlay, btnLeaderBoard, btnInfo;
     GamMain game;
+    SpriteBatch batch;
+    Texture txtgameoverscreen;
+    Buttons btnHome, btnRetry;
 
-    public ScrMenu(GamMain game) {
+    public ScrGameOver(GamMain game) {
         this.game = game;
         batch = new SpriteBatch();
-        txtbackground = new Texture("menuscreen1.png");
-        btnPlay = new Buttons(175, 400, 250, 250, "playbutton.png");
-        btnLeaderBoard = new Buttons(400, 220, 147, 147, "leaderboardbutton.png");
-        btnInfo = new Buttons(30, 200, 180, 180, "infobutton.png");
+        txtgameoverscreen = new Texture("gameoverscreen.png");
+        btnHome = new Buttons(70, 350, 200, 200, "homebutton.png");
+        btnRetry = new Buttons(330, 350, 200, 200, "retrybutton.png");
     }
 
     @Override
@@ -34,27 +38,22 @@ public class ScrMenu implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(txtbackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        btnPlay.draw(batch);
-        btnLeaderBoard.draw(batch);
-        btnInfo.draw(batch);
-        HandleButtons();
-        batch.end();
-
-    }
-
-    public void HandleButtons() {
-        if (Gdx.input.isTouched()) {                          //Learning how to switch screens:
-                                                              //https://github.com/weihanli101/Cygnus-Strike/blob/MasterWithMenu/core/src/com/mygdx/game/MyGame.java
-            if (btnPlay.isMousedOver()) {
-                game.setScreen(new ScrPlay(game));
-            } else if (btnInfo.isMousedOver()) {
-                game.setScreen(new ScrInfo(game));
-            } else if (btnLeaderBoard.isMousedOver()) {
-                game.setScreen(new ScrLeaderBoard(game));
+        batch.draw(txtgameoverscreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        btnHome.draw(batch);
+        if (Gdx.input.isTouched()) {
+            if (btnHome.isMousedOver()) {
+                game.setScreen(new ScrMenu(game));
             }
         }
+        btnRetry.draw(batch);
+        if (Gdx.input.isTouched()) {
+                if (btnRetry.isMousedOver()) {
+                    game.setScreen(new ScrPlay(game));
+                }
+          }
+        batch.end();
     }
 
     @Override
@@ -79,7 +78,7 @@ public class ScrMenu implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-        txtbackground.dispose();
+        return;
     }
 
     @Override
@@ -121,4 +120,5 @@ public class ScrMenu implements Screen, InputProcessor {
     public boolean scrolled(int amount) {
         return true;
     }
+
 }
